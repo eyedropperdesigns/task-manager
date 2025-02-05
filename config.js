@@ -1,6 +1,6 @@
-const CLIENT_ID = "YOUR_GOOGLE_CLIENT_ID";
-const API_KEY = "YOUR_GOOGLE_API_KEY";
-const GOOGLE_SHEET_ID = "YOUR_SPREADSHEET_ID";
+const CLIENT_ID = "1087490879665-5t924msq0eiqrgmrtpcb4t8llq3iddt7.apps.googleusercontent.com";
+const API_KEY = "AIzaSyA2Kt3ik4YOKQWGg0zwvja5MWiOw3mvkrg";
+const GOOGLE_SHEET_ID = "1qfHTjdy0IpDZOYYIKIvDBpuDeJlx3bjRJb_KrqSax2E";
 const DISCOVERY_DOCS = [
     "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
