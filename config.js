@@ -1,4 +1,4 @@
-const CLIENT_ID = "1087490879665-g68sblrcdlqo49pkkqtvd9o6hbk8qdeb.apps.googleusercontent.com";
+const CLIENT_ID = "1087490879665-pg7nt4o8i9anvg6j97mo8p03b8od9ug7.apps.googleusercontent.com";
 const API_KEY = "AIzaSyA2Kt3ik4YOKQWGg0zwvja5MWiOw3mvkrg";
 const GOOGLE_SHEET_ID = "1qfHTjdy0IpDZOYYIKIvDBpuDeJlx3bjRJb_KrqSax2E";
 const DISCOVERY_DOCS = [
