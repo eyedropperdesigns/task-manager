@@ -2,15 +2,9 @@
 // Features: Google Sheets, Google Tasks, Google Calendar, Voice Input
 
 function handleClientLoad() {
-    console.log("Loading Google API...");
-    gapi.load("client:auth2", () => {
-        initClient().then(() => {
-            return gapi.client.load("tasks", "v1"); // Ensure Tasks API is fully loaded
-        }).then(() => {
-            console.log("Google Tasks API Loaded Successfully");
-        }).catch(error => {
-            console.error("Google API Initialization Failed", error);
-        });
+    gapi.load("client:auth2", async () => {
+        await initClient();
+        await loadGoogleTasksAPI();
     });
 }
 
@@ -28,11 +22,19 @@ async function initClient() {
     }
 }
 
+async function loadGoogleTasksAPI() {
+    try {
+        await gapi.client.load("tasks", "v1");
+        console.log("Google Tasks API Loaded Successfully");
+    } catch (error) {
+        console.error("Error loading Google Tasks API", error);
+    }
+}
+
 async function ensureTasksApiLoaded() {
-    if (!gapi.client.tasks) {
+    while (!gapi.client.tasks) {
         console.log("Waiting for Google Tasks API to load...");
-        await new Promise(resolve => setTimeout(resolve, 2000));
-        return ensureTasksApiLoaded();
+        await new Promise(resolve => setTimeout(resolve, 1000));
     }
     console.log("Google Tasks API is ready.");
 }
@@ -49,38 +51,40 @@ async function addTask() {
         due: dueDate ? new Date(dueDate).toISOString() : null,
     };
     
-    gapi.client.tasks.tasks.insert({
-        tasklist: "@default",
-        resource: task
-    }).then(response => {
+    try {
+        let response = await gapi.client.tasks.tasks.insert({
+            tasklist: "@default",
+            resource: task
+        });
         console.log("Task added to Google Tasks", response);
         saveTaskToGoogleSheets(taskTitle, dueDate);
         if (syncToCalendar && dueDate) {
             addTaskToCalendar(taskTitle, dueDate);
         }
-    }).catch(error => {
+    } catch (error) {
         console.error("Error adding task to Google Tasks", error);
-    });
+    }
 }
 
-function addTaskToCalendar(title, dueDate) {
+async function addTaskToCalendar(title, dueDate) {
     let event = {
         summary: title,
         start: { date: dueDate },
         end: { date: dueDate }
     };
     
-    gapi.client.calendar.events.insert({
-        calendarId: "primary",
-        resource: event
-    }).then(response => {
+    try {
+        let response = await gapi.client.calendar.events.insert({
+            calendarId: "primary",
+            resource: event
+        });
         console.log("Task added to Google Calendar", response);
-    }).catch(error => {
+    } catch (error) {
         console.error("Error adding task to Google Calendar", error);
-    });
+    }
 }
 
-function saveTaskToGoogleSheets(title, dueDate) {
+async function saveTaskToGoogleSheets(title, dueDate) {
     let params = {
         spreadsheetId: GOOGLE_SHEET_ID,
         range: "Tasks!A:C",
@@ -92,11 +96,12 @@ function saveTaskToGoogleSheets(title, dueDate) {
 
     let body = { values: values };
 
-    gapi.client.sheets.spreadsheets.values.append(params, body).then(response => {
+    try {
+        let response = await gapi.client.sheets.spreadsheets.values.append(params, body);
         console.log("Task saved to Google Sheets", response);
-    }).catch(error => {
+    } catch (error) {
         console.error("Error saving task to Google Sheets", error);
-    });
+    }
 }
 
 function startVoiceInput() {
