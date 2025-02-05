@@ -1,14 +1,12 @@
 // Task Manager Web App
-// Features: Google Sheets, Google Tasks, Google Calendar, Voice Input
+// Uses Google Identity Services (GIS) for authentication and Google Tasks API
 
-function handleClientLoad() {
-    gapi.load("client:auth2", async () => {
-        await initClient();
-        await loadGoogleTasksAPI();
-    });
+function handleGoogleSignIn(response) {
+    console.log("Google Sign-in successful", response);
+    initGoogleAPI();
 }
 
-async function initClient() {
+async function initGoogleAPI() {
     try {
         await gapi.client.init({
             apiKey: API_KEY,
@@ -20,28 +18,13 @@ async function initClient() {
     }
 }
 
-// Handle Sign-in using Google Identity Services (GIS)
-function handleGoogleSignIn(response) {
-    console.log("Google Sign-in successful", response);
-    initClient();
-}
-
-
-async function loadGoogleTasksAPI() {
-    try {
-        await gapi.client.load("tasks", "v1");
-        console.log("Google Tasks API Loaded Successfully");
-    } catch (error) {
-        console.error("Error loading Google Tasks API", error);
-    }
-}
-
 async function ensureTasksApiLoaded() {
-    while (!gapi.client.tasks) {
-        console.log("Waiting for Google Tasks API to load...");
+    if (typeof google === "undefined" || !google.accounts.id) {
+        console.log("Google Identity Services not loaded, retrying...");
         await new Promise(resolve => setTimeout(resolve, 1000));
+        return ensureTasksApiLoaded();
     }
-    console.log("Google Tasks API is ready.");
+    console.log("Google Identity Services API is ready.");
 }
 
 async function addTask() {
