@@ -20,11 +20,15 @@
     
     <ul id="taskList"></ul>
 
+
     <script>
-        function handleClientLoad() {
-            gapi.load("client:auth2", initClient);
-        }
-    </script>
+    function handleClientLoad() {
+        console.log("handleClientLoad() called.");
+        gapi.load("client:auth2", initClient);
+    }
+</script>
+
+
     <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
 
   
