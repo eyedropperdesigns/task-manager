@@ -74,3 +74,16 @@ function startVoiceInput() {
     };
     recognition.start();
 }
+
+function initClient() {
+    gapi.client.init({
+        apiKey: API_KEY,
+        clientId: CLIENT_ID,
+        discoveryDocs: DISCOVERY_DOCS,
+        scope: SCOPES
+    }).then(() => {
+        console.log("Google API Initialized");
+    }).catch(error => {
+        console.error("Google API Initialization Failed", error);
+    });
+}
