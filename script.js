@@ -2,20 +2,29 @@
 // Features: Google Sheets, Google Tasks, Google Calendar, Voice Input
 
 function handleClientLoad() {
-    gapi.load("client:auth2", initClient);
+    gapi.load("client:auth2", () => {
+        initClient().then(() => {
+            return gapi.client.load("tasks", "v1"); // Ensure Tasks API is fully loaded
+        }).then(() => {
+            console.log("Google Tasks API Loaded Successfully");
+        }).catch(error => {
+            console.error("Google API Initialization Failed", error);
+        });
+    });
 }
 
-function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-    }).then(() => {
+async function initClient() {
+    try {
+        await gapi.client.init({
+            apiKey: API_KEY,
+            clientId: CLIENT_ID,
+            discoveryDocs: DISCOVERY_DOCS,
+            scope: SCOPES
+        });
         console.log("Google API Initialized Successfully");
-    }).catch(error => {
+    } catch (error) {
         console.error("Google API Initialization Failed", error);
-    });
+    }
 }
 
 function addTask() {
