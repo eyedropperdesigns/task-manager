@@ -1,24 +1,11 @@
 // Task Manager Web App
 // Features: Google Sheets, Google Tasks, Google Calendar, Voice Input
 
-// Initialize Google API
-const CLIENT_ID = "1087490879665-5t924msq0eiqrgmrtpcb4t8llq3iddt7.apps.googleusercontent.com";
-const API_KEY = "AIzaSyA2Kt3ik4YOKQWGg0zwvja5MWiOw3mvkrg";
-const DISCOVERY_DOCS = [
-    "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
-    "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
-    "https://sheets.googleapis.com/$discovery/rest?version=v4"
-];
-const SCOPES = "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets";
-
 function handleClientLoad() {
-    console.log("handleClientLoad() called.");
     gapi.load("client:auth2", initClient);
 }
 
-
 function initClient() {
-    console.log("Initializing Google API Client...");
     gapi.client.init({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
@@ -46,6 +33,7 @@ function addTask() {
         resource: task
     }).then(response => {
         console.log("Task added to Google Tasks", response);
+        saveTaskToGoogleSheets(taskTitle, dueDate);
         if (syncToCalendar && dueDate) {
             addTaskToCalendar(taskTitle, dueDate);
         }
@@ -71,6 +59,25 @@ function addTaskToCalendar(title, dueDate) {
     });
 }
 
+function saveTaskToGoogleSheets(title, dueDate) {
+    let params = {
+        spreadsheetId: GOOGLE_SHEET_ID,
+        range: "Tasks!A:C",
+        valueInputOption: "RAW",
+        insertDataOption: "INSERT_ROWS",
+    };
+
+    let values = [[title, dueDate, new Date().toISOString()]];
+
+    let body = { values: values };
+
+    gapi.client.sheets.spreadsheets.values.append(params, body).then(response => {
+        console.log("Task saved to Google Sheets", response);
+    }).catch(error => {
+        console.error("Error saving task to Google Sheets", error);
+    });
+}
+
 function startVoiceInput() {
     let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.onresult = (event) => {
@@ -79,6 +86,3 @@ function startVoiceInput() {
     };
     recognition.start();
 }
-
-console.log("Script.js loaded successfully.");
-
