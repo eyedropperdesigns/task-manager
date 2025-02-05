@@ -19,6 +19,12 @@ function initClient() {
 }
 
 function addTask() {
+    if (!gapi.client || !gapi.client.tasks) {
+        console.error("Google Tasks API is not loaded yet. Please wait and try again.");
+        alert("Google Tasks API is still loading. Please try again in a few seconds.");
+        return;
+    }
+    
     let taskTitle = document.getElementById("taskTitle").value;
     let dueDate = document.getElementById("dueDate").value;
     let syncToCalendar = document.getElementById("syncCalendar").checked;
