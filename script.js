@@ -12,15 +12,20 @@ async function initClient() {
     try {
         await gapi.client.init({
             apiKey: API_KEY,
-            clientId: CLIENT_ID,
-            discoveryDocs: DISCOVERY_DOCS,
-            scope: SCOPES
+            discoveryDocs: DISCOVERY_DOCS
         });
         console.log("Google API Initialized Successfully");
     } catch (error) {
         console.error("Google API Initialization Failed", error);
     }
 }
+
+// Handle Sign-in using Google Identity Services (GIS)
+function handleGoogleSignIn(response) {
+    console.log("Google Sign-in successful", response);
+    initClient();
+}
+
 
 async function loadGoogleTasksAPI() {
     try {
