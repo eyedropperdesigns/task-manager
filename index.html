@@ -1,13 +1,26 @@
-<!DOCTYPE html>
+""<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
     <link rel="stylesheet" href="styles.css">
+    
+    <!-- Google Identity Services for authentication -->
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
 </head>
 <body>
     <h1>Task Manager App</h1>
+    
+    <!-- Google Sign-In Button -->
+    <div id="g_id_onload"
+         data-client_id="YOUR_GOOGLE_CLIENT_ID"
+         data-context="signin"
+         data-callback="handleGoogleSignIn"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
+    
     <input type="text" id="taskTitle" placeholder="Enter task...">
     <input type="date" id="dueDate">
     <label>
@@ -21,7 +34,5 @@
     <!-- Load scripts -->
     <script src="config.js"></script>
     <script src="script.js" defer></script>
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-
 </body>
 </html>
