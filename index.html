@@ -9,6 +9,7 @@
     connect-src 'self' https://accounts.google.com https://www.googleapis.com;
 ">
 
+
     <title>Task Manager</title>
     <link rel="stylesheet" href="styles.css">
 
@@ -36,17 +37,9 @@
     </script>
 
     <!-- Load Google API last to ensure it doesn't call initClient before it's defined -->
-    <script>
-        function handleClientLoad() {
-            console.log("handleClientLoad() called.");
-            if (typeof initClient === "function") {
-                gapi.load("client:auth2", initClient);
-            } else {
-                console.error("initClient is still undefined in handleClientLoad.");
-            }
-        }
-    </script>
-    <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
+    
+    <script src="https://apis.google.com/js/api.js" defer></script>
+
 
 </body>
 </html>
