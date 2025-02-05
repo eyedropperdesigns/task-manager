@@ -2,6 +2,7 @@
 // Features: Google Sheets, Google Tasks, Google Calendar, Voice Input
 
 function handleClientLoad() {
+    console.log("Loading Google API...");
     gapi.load("client:auth2", () => {
         initClient().then(() => {
             return gapi.client.load("tasks", "v1"); // Ensure Tasks API is fully loaded
@@ -27,12 +28,17 @@ async function initClient() {
     }
 }
 
-function addTask() {
-    if (!gapi.client || !gapi.client.tasks) {
-        console.error("Google Tasks API is not loaded yet. Please wait and try again.");
-        alert("Google Tasks API is still loading. Please try again in a few seconds.");
-        return;
+async function ensureTasksApiLoaded() {
+    if (!gapi.client.tasks) {
+        console.log("Waiting for Google Tasks API to load...");
+        await new Promise(resolve => setTimeout(resolve, 2000));
+        return ensureTasksApiLoaded();
     }
+    console.log("Google Tasks API is ready.");
+}
+
+async function addTask() {
+    await ensureTasksApiLoaded();
     
     let taskTitle = document.getElementById("taskTitle").value;
     let dueDate = document.getElementById("dueDate").value;
