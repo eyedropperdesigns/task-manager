@@ -12,21 +12,24 @@ const DISCOVERY_DOCS = [
 const SCOPES = "https://www.googleapis.com/auth/tasks https://www.googleapis.com/auth/calendar https://www.googleapis.com/auth/spreadsheets";
 
 function handleClientLoad() {
+    console.log("handleClientLoad() called.");
     gapi.load("client:auth2", initClient);
 }
 
 function initClient() {
+    console.log("Initializing Google API Client...");
     gapi.client.init({
         apiKey: API_KEY,
         clientId: CLIENT_ID,
         discoveryDocs: DISCOVERY_DOCS,
         scope: SCOPES
     }).then(() => {
-        console.log("Google API Initialized");
+        console.log("Google API Initialized Successfully");
+    }).catch(error => {
+        console.error("Google API Initialization Failed", error);
     });
 }
 
-// Function to Add Task
 function addTask() {
     let taskTitle = document.getElementById("taskTitle").value;
     let dueDate = document.getElementById("dueDate").value;
@@ -37,7 +40,6 @@ function addTask() {
         due: dueDate ? new Date(dueDate).toISOString() : null,
     };
     
-    // Add Task to Google Tasks
     gapi.client.tasks.tasks.insert({
         tasklist: "@default",
         resource: task
@@ -46,10 +48,11 @@ function addTask() {
         if (syncToCalendar && dueDate) {
             addTaskToCalendar(taskTitle, dueDate);
         }
+    }).catch(error => {
+        console.error("Error adding task to Google Tasks", error);
     });
 }
 
-// Function to Add Task to Google Calendar
 function addTaskToCalendar(title, dueDate) {
     let event = {
         summary: title,
@@ -62,12 +65,13 @@ function addTaskToCalendar(title, dueDate) {
         resource: event
     }).then(response => {
         console.log("Task added to Google Calendar", response);
+    }).catch(error => {
+        console.error("Error adding task to Google Calendar", error);
     });
 }
 
-// Voice Input Functionality
 function startVoiceInput() {
-    let recognition = new webkitSpeechRecognition() || new SpeechRecognition();
+    let recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
     recognition.onresult = (event) => {
         let speechResult = event.results[0][0].transcript;
         document.getElementById("taskTitle").value = speechResult;
@@ -75,15 +79,5 @@ function startVoiceInput() {
     recognition.start();
 }
 
-function initClient() {
-    gapi.client.init({
-        apiKey: API_KEY,
-        clientId: CLIENT_ID,
-        discoveryDocs: DISCOVERY_DOCS,
-        scope: SCOPES
-    }).then(() => {
-        console.log("Google API Initialized");
-    }).catch(error => {
-        console.error("Google API Initialization Failed", error);
-    });
-}
+console.log("Script.js loaded successfully.");
+
