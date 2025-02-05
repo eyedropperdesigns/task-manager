@@ -5,9 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Manager</title>
     <link rel="stylesheet" href="styles.css">
-    
-    <!-- Load script.js before Google API -->
-    <script src="script.js" defer></script>
 </head>
 <body>
     <h1>Task Manager App</h1>
@@ -21,13 +18,26 @@
     
     <ul id="taskList"></ul>
 
-    <!-- Handle Google API Load -->
+    <!-- Load script.js first to ensure initClient() is defined -->
+    <script src="script.js"></script>
+
+    <!-- Debugging: Log to confirm script.js is loaded -->
+    <script>
+        console.log("Checking if initClient exists in index.html: ", typeof initClient);
+    </script>
+
+    <!-- Load Google API last to ensure it doesn't call initClient before it's defined -->
     <script>
         function handleClientLoad() {
             console.log("handleClientLoad() called.");
-            gapi.load("client:auth2", initClient);
+            if (typeof initClient === "function") {
+                gapi.load("client:auth2", initClient);
+            } else {
+                console.error("initClient is still undefined in handleClientLoad.");
+            }
         }
     </script>
     <script src="https://apis.google.com/js/api.js" onload="handleClientLoad()"></script>
+
 </body>
 </html>
