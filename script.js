@@ -3,7 +3,7 @@
 
 // Initialize Google API
 const CLIENT_ID = "1087490879665-5t924msq0eiqrgmrtpcb4t8llq3iddt7.apps.googleusercontent.com";
-const API_KEY = "AIzaSyCTFAhyuso-_0jb61gPax4zShBjZ0nsEOA";
+const API_KEY = "AIzaSyA2Kt3ik4YOKQWGg0zwvja5MWiOw3mvkrg";
 const DISCOVERY_DOCS = [
     "https://www.googleapis.com/discovery/v1/apis/tasks/v1/rest",
     "https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest",
